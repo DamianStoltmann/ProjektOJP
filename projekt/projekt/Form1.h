@@ -187,7 +187,7 @@ private: System::Void zakoñczToolStripMenuItem_Click(System::Object^  sender, Sy
 		nieBtn->Text = "Nie";
 		
 		Button^ anulujBtn = gcnew Button();
-		anulujBtn->Location = Point(225,30);
+		anulujBtn->Location = Point(225, 30);
 		anulujBtn->Text = "Anuluj";
 	
 		czyZapisacZmianyForm->Controls->Add(takBtn);
