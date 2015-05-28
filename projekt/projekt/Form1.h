@@ -1,5 +1,5 @@
 #pragma once
-
+#include <fstream>
 namespace WindowsFormApplication1 {
 
 	using namespace System;
@@ -8,6 +8,8 @@ namespace WindowsFormApplication1 {
 	using namespace System::Windows::Forms;
 	using namespace System::Data;
 	using namespace System::Drawing;
+	using namespace System::IO;
+	using namespace std;
 
 	/// <summary>
 	/// Summary for Form1
@@ -41,6 +43,7 @@ namespace WindowsFormApplication1 {
 
 	private: System::Windows::Forms::RichTextBox^  richTextBox1;
 	private: System::Windows::Forms::MenuStrip^  menuStrip1;
+	private: Form ^ czyZapisacZmianyForm;
 	private: System::Windows::Forms::ToolStripMenuItem^  plikToolStripMenuItem;
 	private: System::Windows::Forms::ToolStripMenuItem^  opcjeToolStripMenuItem;
 	private: System::Windows::Forms::ToolStripMenuItem^  autorToolStripMenuItem;
@@ -171,7 +174,7 @@ private: System::Void zakoñczToolStripMenuItem_Click(System::Object^  sender, Sy
 	}
 	else
 	{
-		Form ^ czyZapisacZmianyForm = gcnew Form();
+		czyZapisacZmianyForm = gcnew Form();
 		czyZapisacZmianyForm->Width = 400;
 		czyZapisacZmianyForm->Height = 100;
 		
@@ -181,15 +184,21 @@ private: System::Void zakoñczToolStripMenuItem_Click(System::Object^  sender, Sy
 		Button^ takBtn = gcnew Button();
 		takBtn->Location = Point(75, 30);
 		takBtn->Text="Tak";
-
+		takBtn->Click += gcnew System::EventHandler(this, &Form1::takBtn_Click);
+		
 		Button^ nieBtn = gcnew Button();
 		nieBtn->Location = Point(150,30);
 		nieBtn->Text = "Nie";
+		nieBtn->Click += gcnew System::EventHandler(this, &Form1::nieBtn_Click);
 		
+
 		Button^ anulujBtn = gcnew Button();
 		anulujBtn->Location = Point(225, 30);
 		anulujBtn->Text = "Anuluj";
-	
+		anulujBtn->Click += gcnew System::EventHandler(this, &Form1::anulujBtn_Click);
+
+		
+
 		czyZapisacZmianyForm->Controls->Add(takBtn);
 		czyZapisacZmianyForm->Controls->Add(nieBtn);
 		czyZapisacZmianyForm->Controls->Add(anulujBtn);
@@ -202,6 +211,42 @@ private: System::Void zakoñczToolStripMenuItem_Click(System::Object^  sender, Sy
 private: System::Void czyZmienilSieTekst(System::Object^  sender, System::EventArgs^  e) {
 	czyTekstZmieniony = true;
 
+}
+private: System::Void nieBtn_Click(System::Object^  sender, System::EventArgs^  e){
+	this->Close();
+}
+
+private: System::Void anulujBtn_Click(System::Object^  sender, System::EventArgs^  e){
+	czyZapisacZmianyForm->Close();
+}
+
+void MarshalString(String ^ s, string& os) {
+	using namespace Runtime::InteropServices;
+	const char* chars =
+		(const char*)(Marshal::StringToHGlobalAnsi(s)).ToPointer();
+	os = chars;
+	Marshal::FreeHGlobal(IntPtr((void*)chars));
+}
+
+private: System::Void takBtn_Click(System::Object^  sender, System::EventArgs^  e){
+	Stream^ myStream;
+	SaveFileDialog^ saveFileDialog1 = gcnew SaveFileDialog;
+	saveFileDialog1->Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
+	saveFileDialog1->FilterIndex = 2;
+	saveFileDialog1->RestoreDirectory = true;
+	if (saveFileDialog1->ShowDialog() == System::Windows::Forms::DialogResult::OK)
+	{
+		if ((myStream = saveFileDialog1->OpenFile()) != nullptr)
+		{
+			fstream myfile;
+			string nazwaPliku;
+			MarshalString(saveFileDialog1->FileName, nazwaPliku);
+			myfile.open(nazwaPliku, fstream::in | fstream::out | fstream::trunc);
+			myfile << "COSTAM";
+			myfile.close();
+			myStream->Close();
+		}
+	}
 }
 };
 }
