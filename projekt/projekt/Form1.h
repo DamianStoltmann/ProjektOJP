@@ -91,8 +91,8 @@ namespace WindowsFormApplication1 {
 			// menuStrip1
 			// 
 			this->menuStrip1->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(3) {
-				this->plikToolStripMenuItem,
-					this->opcjeToolStripMenuItem, this->autorToolStripMenuItem
+			this->plikToolStripMenuItem,
+			this->opcjeToolStripMenuItem, this->autorToolStripMenuItem
 			});
 			this->menuStrip1->Location = System::Drawing::Point(0, 0);
 			this->menuStrip1->Name = L"menuStrip1";
@@ -103,8 +103,8 @@ namespace WindowsFormApplication1 {
 			// plikToolStripMenuItem
 			// 
 			this->plikToolStripMenuItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(2) {
-				this->zapiszToolStripMenuItem,
-					this->zakoñczToolStripMenuItem
+			this->zapiszToolStripMenuItem,
+			this->zakoñczToolStripMenuItem
 			});
 			this->plikToolStripMenuItem->Name = L"plikToolStripMenuItem";
 			this->plikToolStripMenuItem->Size = System::Drawing::Size(38, 20);
@@ -178,7 +178,6 @@ private: System::Void zakoñczToolStripMenuItem_Click(System::Object^  sender, Sy
 		czyZapisacZmianyForm->Width = 400;
 		czyZapisacZmianyForm->Height = 100;
 		
-		
 		czyZapisacZmianyForm->Text = "Czy chcesz zapisaæ zmiany ?";
 		
 		Button^ takBtn = gcnew Button();
@@ -221,21 +220,24 @@ private: System::Void anulujBtn_Click(System::Object^  sender, System::EventArgs
 }
 
 void MarshalString(String ^ s, string& os) {
+
 	using namespace Runtime::InteropServices;
-	const char* chars =
-		(const char*)(Marshal::StringToHGlobalAnsi(s)).ToPointer();
+	const char* chars =(const char*)(Marshal::StringToHGlobalAnsi(s)).ToPointer();
 	os = chars;
 	Marshal::FreeHGlobal(IntPtr((void*)chars));
 }
 
 private: System::Void takBtn_Click(System::Object^  sender, System::EventArgs^  e){
+
 	Stream^ myStream;
 	SaveFileDialog^ saveFileDialog1 = gcnew SaveFileDialog;
 	saveFileDialog1->Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
 	saveFileDialog1->FilterIndex = 2;
 	saveFileDialog1->RestoreDirectory = true;
 	if (saveFileDialog1->ShowDialog() == System::Windows::Forms::DialogResult::OK)
+	
 	{
+	
 		if ((myStream = saveFileDialog1->OpenFile()) != nullptr)
 		{
 			fstream myfile;
