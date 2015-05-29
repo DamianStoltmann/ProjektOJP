@@ -44,6 +44,9 @@ namespace WindowsFormApplication1 {
 	private: System::Windows::Forms::RichTextBox^  richTextBox1;
 	private: System::Windows::Forms::MenuStrip^  menuStrip1;
 	private: Form ^ czyZapisacZmianyForm;
+	private: MemoryStream^ userInput;
+	private: bool czyPlikStworzony = false;
+	private: String^ nazwa_pliku;
 	private: System::Windows::Forms::ToolStripMenuItem^  plikToolStripMenuItem;
 	private: System::Windows::Forms::ToolStripMenuItem^  opcjeToolStripMenuItem;
 	private: System::Windows::Forms::ToolStripMenuItem^  autorToolStripMenuItem;
@@ -67,6 +70,7 @@ namespace WindowsFormApplication1 {
 		/// </summary>
 		void InitializeComponent(void)
 		{
+			userInput = gcnew MemoryStream;
 			this->richTextBox1 = (gcnew System::Windows::Forms::RichTextBox());
 			this->menuStrip1 = (gcnew System::Windows::Forms::MenuStrip());
 			this->plikToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
@@ -229,26 +233,25 @@ void MarshalString(String ^ s, string& os) {
 
 private: System::Void takBtn_Click(System::Object^  sender, System::EventArgs^  e){
 
-	Stream^ myStream;
-	SaveFileDialog^ saveFileDialog1 = gcnew SaveFileDialog;
-	saveFileDialog1->Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
-	saveFileDialog1->FilterIndex = 2;
-	saveFileDialog1->RestoreDirectory = true;
-	if (saveFileDialog1->ShowDialog() == System::Windows::Forms::DialogResult::OK)
-	
-	{
-	
-		if ((myStream = saveFileDialog1->OpenFile()) != nullptr)
-		{
-			fstream myfile;
-			string nazwaPliku;
-			MarshalString(saveFileDialog1->FileName, nazwaPliku);
-			myfile.open(nazwaPliku, fstream::in | fstream::out | fstream::trunc);
-			myfile << "COSTAM";
-			myfile.close();
-			myStream->Close();
-		}
+	if (!czyPlikStworzony){
+		SaveFileDialog^ saveFileDialog1 = gcnew SaveFileDialog;
+		saveFileDialog1->Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
+		saveFileDialog1->ShowDialog();
+		richTextBox1->SaveFile(saveFileDialog1->FileName);
+		nazwa_pliku = saveFileDialog1->FileName;
+		czyPlikStworzony = true;
+		//Close();
 	}
+	else{
+		FileStream^ plik;
+		plik = File::Open(nazwa_pliku,FileMode::Open);
+		richTextBox1->SaveFile(userInput, RichTextBoxStreamType::PlainText);
+		userInput->WriteByte(13);
+		userInput->Position = 0;
+		userInput->WriteTo(plik);
+		plik->Close();
+	}
+	
 }
 };
 }
